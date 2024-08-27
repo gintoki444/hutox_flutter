@@ -1,8 +1,9 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+// import 'dart:convert';
+// import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'home_screen.dart';
+import '../services/api/api_service.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -15,7 +16,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
-
+  final ApiService _apiService =
+      ApiService(); // Create an instance of ApiService
   bool _obscureText = true;
   bool _isLoading = false;
 
@@ -30,6 +32,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final email = _emailController.text;
     final password = _passwordController.text;
     final confirmPassword = _confirmPasswordController.text;
+
+    final loginData = {'email': email, 'password': password};
 
     if (name.isEmpty) {
       _showErrorDialog('Name cannot be empty');
@@ -52,30 +56,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _isLoading = true;
     });
 
-    final url =
-        'https://asia-southeast1-tagsystem-2a343.cloudfunctions.net/apitag/api/users/register';
-    final headers = {'Content-Type': 'application/json'};
-    final body = json.encode({
-      'username': name,
-      'email': email,
-      'password': password,
-    });
+    try {
+      final responseData = await _apiService.register(name, email, password);
 
-    final response =
-        await http.post(Uri.parse(url), headers: headers, body: body);
-
-    setState(() {
-      _isLoading = false;
-    });
-
-    if (response.statusCode == 200) {
-      final responseData = json.decode(response.body);
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('token', responseData['token']);
-      _showSuccessDialog('Registration successful!');
-    } else {
-      final errorData = json.decode(response.body);
-      _showErrorDialog(errorData['message'] ?? 'Registration failed');
+      // ตรวจสอบว่า responseData มี userId หรือไม่
+      if (responseData['userId'] != null) {
+        final checkLoginData = await _apiService.checkLogin(loginData);
+        if (checkLoginData != null) {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setBool('isLoggedIn', true);
+          await prefs.setString('token', checkLoginData['token']);
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => HomeScreen()),
+          );
+        }
+        _showSuccessDialog('Registration successful!');
+      } else {
+        _showErrorDialog('Registration failed: ${responseData['message']}');
+      }
+    } catch (e) {
+      _showErrorDialog('Error occurred: $e');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -124,7 +129,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          color: Color(0xFFFF5128), // สีพื้นหลัง
+          color: Color(0xFFEF4D23), // สีพื้นหลัง
         ),
         child: Center(
           child: SingleChildScrollView(
@@ -134,12 +139,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
               children: <Widget>[
                 SizedBox(height: 40.0),
                 Image.asset(
-                  'assets/images/logo-hutox.jpg',
+                  'assets/images/logo-hutox.png',
                   height: 150.0, // ตั้งค่าขนาดโลโก้ตามต้องการ
                 ),
                 SizedBox(height: 20.0),
                 Text(
-                  'Verify Tags Application',
+                  'Register',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,

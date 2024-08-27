@@ -13,6 +13,7 @@ class ScanHistoryScreen extends StatefulWidget {
 class _ScanHistoryScreenState extends State<ScanHistoryScreen> {
   final ApiService _apiService = ApiService();
   List<dynamic> scanHistory = [];
+  bool _isLoading = true; // เพิ่มตัวแปรสำหรับเก็บสถานะการโหลด
 
   @override
   void initState() {
@@ -34,42 +35,66 @@ class _ScanHistoryScreenState extends State<ScanHistoryScreen> {
 
         setState(() {
           scanHistory = history;
+          _isLoading = false; // ตั้งค่าให้หยุดแสดงการโหลดเมื่อได้ข้อมูลแล้ว
         });
       }
+    } else {
+      setState(() {
+        _isLoading = false; // ตั้งค่าให้หยุดแสดงการโหลดในกรณีที่ไม่มี token
+      });
     }
   }
 
+  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Scan History'),
       ),
-      backgroundColor: Color(0xFFFF5128), // ตั้งค่าสีพื้นหลังของ Scaffold
+      backgroundColor: Color(0xFFEF4D23), // ตั้งค่าสีพื้นหลังของ Scaffold
       body: SingleChildScrollView(
         child: Container(
-          color: Color(0xFFFF5128), // ตั้งค่าสีพื้นหลังของ Container
+          padding: EdgeInsets.all(10),
+          color: Color(0xFFEF4D23), // ตั้งค่าสีพื้นหลังของ Container
           child: Column(
             children: [
-              SizedBox(height: 20.0), // เพิ่มระยะห่างด้านบน
+              SizedBox(height: 40.0), // เพิ่มระยะห่างด้านบน
               Image.asset(
                 'assets/images/logo-hutox-new.png',
-                height: 60.0, // ปรับขนาดโลโก้ตามความเหมาะสม
+                height: 70.0, // ปรับขนาดโลโก้ตามความเหมาะสม
               ),
-              SizedBox(height: 20.0), // เพิ่มระยะห่างระหว่างโลโก้และเนื้อหา
-              scanHistory.isEmpty
+              SizedBox(height: 30.0), // เพิ่มระยะห่างระหว่างโลโก้และเนื้อหา
+              _isLoading
                   ? Center(child: CircularProgressIndicator())
-                  : ListView.builder(
-                      shrinkWrap:
-                          true, // ใช้ shrinkWrap เพื่อให้ ListView ใช้ขนาดที่เหมาะสม
-                      physics:
-                          NeverScrollableScrollPhysics(), // ปิดการ scroll ของ ListView เพราะใช้ SingleChildScrollView แทน
-                      itemCount: scanHistory.length,
-                      itemBuilder: (context, index) {
-                        final item = scanHistory[index];
-                        return _buildScanHistoryItem(item);
-                      },
-                    ),
+                  : scanHistory.isEmpty
+                      ? Center(
+                          child: Column(
+                          children: [
+                            SizedBox(
+                                height:
+                                    20.0), // เพิ่มระยะห่างระหว่างโลโก้และข้อความ
+                            Text(
+                              'ไม่มีข้อมูล',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ))
+                      : ListView.builder(
+                          shrinkWrap:
+                              true, // ใช้ shrinkWrap เพื่อให้ ListView ใช้ขนาดที่เหมาะสม
+                          physics:
+                              NeverScrollableScrollPhysics(), // ปิดการ scroll ของ ListView เพราะใช้ SingleChildScrollView แทน
+                          itemCount: scanHistory.length,
+                          itemBuilder: (context, index) {
+                            final item = scanHistory[index];
+                            return _buildScanHistoryItem(item);
+                          },
+                        ),
             ],
           ),
         ),
@@ -91,6 +116,7 @@ class _ScanHistoryScreenState extends State<ScanHistoryScreen> {
 
     return Card(
       margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+      color: Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Row(

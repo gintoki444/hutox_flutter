@@ -95,72 +95,75 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       appBar: AppBar(
         title: Text('Edit Profile'),
       ),
-      backgroundColor: Color(0xFFFF5128), // ตั้งค่าสีพื้นหลังของ Scaffold
+      backgroundColor: Color(0xFFEF4D23), // ตั้งค่าสีพื้นหลังของ Scaffold
       body: username == null || email == null
           ? Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: <Widget>[
-                  SizedBox(height: 20.0),
-                  Image.asset(
-                    'assets/images/logo-hutox-new.png',
-                    height: 60.0, // ปรับขนาดโลโก้ตามความเหมาะสม
-                  ),
-                  SizedBox(height: 20.0),
-                  SizedBox(height: 20.0),
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        _buildProfileItem(
-                          Icons.person,
-                          'Username',
-                          username!,
-                          enabled: false,
-                        ),
-                        _buildProfileItem(
-                          Icons.email,
-                          'Email',
-                          email!,
-                          enabled: false,
-                        ),
-                        _buildTextField(
-                          Icons.card_membership,
-                          'Full Name',
-                          fullNameController,
-                        ),
-                        _buildTextField(
-                          Icons.phone,
-                          'Phone',
-                          phoneController,
-                        ),
-                        _buildTextField(
-                          Icons.location_on,
-                          'Address',
-                          addressController,
-                        ),
-                        _buildTextField(
-                          Icons.language,
-                          'Country',
-                          countryController,
-                        ),
-                        SizedBox(height: 20.0),
-                        _buildActionButton(
-                          context,
-                          'Save Changes',
-                          Colors.red,
-                          () {
-                            if (_formKey.currentState!.validate()) {
-                              _saveChanges();
-                            }
-                          },
-                        ),
-                      ],
+              child: Container(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(height: 20.0),
+                    Image.asset(
+                      'assets/images/logo-hutox-new.png',
+                      height: 60.0, // ปรับขนาดโลโก้ตามความเหมาะสม
                     ),
-                  ),
-                ],
+                    SizedBox(height: 20.0),
+                    SizedBox(height: 20.0),
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          _buildProfileItem(
+                            Icons.person,
+                            'Username',
+                            username!,
+                            enabled: false,
+                          ),
+                          _buildProfileItem(
+                            Icons.email,
+                            'Email',
+                            email!,
+                            enabled: false,
+                          ),
+                          _buildTextField(
+                            Icons.card_membership,
+                            'Full Name',
+                            fullNameController,
+                          ),
+                          _buildTextField(
+                            Icons.phone,
+                            'Phone',
+                            phoneController,
+                          ),
+                          _buildTextField(
+                            Icons.location_on,
+                            'Address',
+                            addressController,
+                          ),
+                          _buildTextField(
+                            Icons.language,
+                            'Country',
+                            countryController,
+                          ),
+                          SizedBox(height: 20.0),
+                          _buildActionButton(
+                            context,
+                            'Save Changes',
+                            Colors.red,
+                            () {
+                              if (_formKey.currentState!.validate()) {
+                                _saveChanges();
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
     );
@@ -196,12 +199,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       child: TextFormField(
         controller: controller,
         decoration: InputDecoration(
-            labelText: label,
-            prefixIcon: Icon(
-              icon,
-            ),
-            labelStyle: TextStyle(color: Colors.white),
-            prefixIconColor: Colors.white),
+          labelText: label,
+          prefixIcon: Icon(
+            icon,
+          ),
+          labelStyle: TextStyle(color: Colors.white),
+          prefixIconColor: Colors.white,
+          hintStyle: TextStyle(color: Colors.white),
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+          ),
+        ),
         style: TextStyle(color: Colors.white),
       ),
     );
@@ -214,13 +225,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     VoidCallback onPressed,
   ) {
     return SizedBox(
-      width: double.infinity,
+      width: MediaQuery.of(context).size.width * 0.7,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: Color(0xFFFF5128),
+          backgroundColor: Color(0xFFEF4D23),
           padding: EdgeInsets.symmetric(vertical: 16.0),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30.0),
+            side: BorderSide(color: Colors.white, width: 2), // เส้นขอบสีขาว
           ),
         ),
         onPressed: onPressed,

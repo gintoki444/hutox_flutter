@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uuid/uuid.dart';
-import '../services/api/api_service.dart';
-import 'edit_prizedraw_details.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:uuid/uuid.dart';
+import '../../services/api/api_service.dart';
+// import '../edit_prizedraw_details.dart';
+// import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class ScanProductTagScreen extends StatefulWidget {
+class ScanProductScreen extends StatefulWidget {
   @override
-  _ScanProductTagScreenState createState() => _ScanProductTagScreenState();
+  _ScanProductScreenState createState() => _ScanProductScreenState();
 }
 
-class _ScanProductTagScreenState extends State<ScanProductTagScreen> {
+class _ScanProductScreenState extends State<ScanProductScreen> {
   final ApiService _apiService = ApiService();
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   Barcode? result;
@@ -103,30 +103,9 @@ class _ScanProductTagScreenState extends State<ScanProductTagScreen> {
   }
 
   Future<void> _handleScanResult(String tagCode) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('token');
-    String userId = '';
-
-    if (token != null) {
-      Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
-      userId = decodedToken['userId'].toString();
-    }
-
-    String deviceUuid = Uuid().v4();
-    String ipAddress = '192.168.1.1';
-    String locationString = '13.736717,100.523186';
-
-    Map<String, dynamic> scanData = {
-      'tagCode': tagCode,
-      'userId': userId,
-      'deviceUuid': deviceUuid,
-      'ip_address': ipAddress,
-      'location': locationString,
-    };
-
     try {
-      await _apiService.authenScan(scanData);
-      final tagScanData = await _apiService.getTagScanData(tagCode);
+      // await _apiService.authenScan(scanData);
+      final tagScanData = await _apiService.getTagUserScanData(tagCode);
       print(
           'Scan count for tag ${tagScanData.tagCode}: ${tagScanData.scanCount}');
       print('message: ${tagScanData.message}');
@@ -217,8 +196,9 @@ class _ScanProductTagScreenState extends State<ScanProductTagScreen> {
               ),
               SizedBox(height: 20),
               ElevatedButton(
+                onPressed: () => Navigator.pop(context),
                 style: ElevatedButton.styleFrom(
-                  fixedSize: Size(200, 30),
+                  fixedSize: Size(90, 30),
                   backgroundColor: Color(0xFFEF4D23),
                   padding:
                       EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
@@ -226,24 +206,9 @@ class _ScanProductTagScreenState extends State<ScanProductTagScreen> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
-                onPressed: () {
-                  Navigator.pop(context);
-                  setState(() {
-                    result = null;
-                  });
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditPrizedrawDetails(tagId: tagId),
-                    ),
-                  );
-                },
                 child: Text(
-                  'ลงทะเบียนรับสินค้า',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.normal),
+                  'OK',
+                  style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
               ),
             ],
@@ -268,6 +233,7 @@ class _ScanProductTagScreenState extends State<ScanProductTagScreen> {
     } else {
       icon = FontAwesomeIcons.circleXmark; // ค่าเริ่มต้นหากไม่ตรงกับ status ใด
     }
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -313,18 +279,24 @@ class _ScanProductTagScreenState extends State<ScanProductTagScreen> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
-                onPressed: () {
-                  Navigator.pop(context);
-                  setState(() {
-                    result = null;
-                  });
+                onPressed: () async {
+                  if (status == "verify-warning") {
+                    await controller?.pauseCamera(); // หยุดกล้อง
+                    controller?.dispose(); // ปิดกล้อง
+                    setState(() {
+                      result = null;
+                    });
+                    Navigator.pushReplacementNamed(context, '/login');
+                  } else {
+                    Navigator.pop(context);
+                    setState(() {
+                      result = null;
+                    });
+                  }
                 },
                 child: Text(
                   'OK',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.normal),
+                  style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
               ),
             ],

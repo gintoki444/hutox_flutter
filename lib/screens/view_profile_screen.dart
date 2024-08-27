@@ -66,9 +66,9 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
               // ใช้ SingleChildScrollView เพื่อให้สามารถเลื่อนหน้าได้
               child: Container(
                 padding: const EdgeInsets.all(16.0),
-                color: Color(0xFFFF5128),
+                color: Color(0xFFEF4D23),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Center(
                       child: Column(
@@ -77,7 +77,7 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                               height: 40.0), // เพิ่มระยะห่างด้านบนสำหรับ logo
                           Image.asset(
                             'assets/images/logo-hutox-new.png',
-                            height: 50.0, // ปรับขนาดโลโก้ตามความเหมาะสม
+                            height: 70.0, // ปรับขนาดโลโก้ตามความเหมาะสม
                           ),
                           SizedBox(height: 20.0),
                           CircleAvatar(
@@ -124,14 +124,16 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                       'Log Out',
                       Colors.red,
                       () async {
-                        // ลบ token และกลับไปที่หน้า login
                         SharedPreferences prefs =
                             await SharedPreferences.getInstance();
-                        await prefs.remove('token');
-                        Navigator.pushReplacement(
+                        await prefs
+                            .clear(); // เคลียร์ข้อมูลทั้งหมดใน SharedPreferences
+                        Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
                               builder: (context) => LoginScreen()),
+                          (Route<dynamic> route) =>
+                              false, // ปิดทุกหน้าและนำไปที่หน้า Login
                         );
                       },
                     ),
@@ -144,16 +146,16 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
 
   Widget _buildProfileItem(IconData icon, String title, String? value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(title,
               style:
-                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
           Row(
             children: [
-              Icon(icon, color: Colors.black),
+              Icon(icon, color: Colors.white),
               SizedBox(width: 10.0),
               // ตรวจสอบว่าค่า value ไม่เป็น null ถ้าเป็น null ให้แสดงค่า default
               Text(value ?? 'Not available',
@@ -169,16 +171,21 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
   Widget _buildActionButton(
       BuildContext context, String label, Color color, VoidCallback onPressed) {
     return SizedBox(
-      width: double.infinity,
+      width: MediaQuery.of(context).size.width * 0.7,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: Color.fromARGB(255, 246, 105, 74),
+          backgroundColor: Color(0xFFEF4D23),
           padding: EdgeInsets.symmetric(vertical: 16.0),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+          side: BorderSide(color: Colors.white, width: 2), // เส้นขอบสีขาว
+          // shape: RoundedRectangleBorder(
+          //   borderRadius: BorderRadius.circular(30),
+          // ),
         ),
         onPressed: onPressed,
-        child: Text(label, style: TextStyle(color: Colors.white)),
+        child: Text(label,
+            textAlign: TextAlign.center, style: TextStyle(color: Colors.white)),
       ),
     );
   }

@@ -30,18 +30,18 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  shared_preferences: ^2.0.6
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+  shared_preferences: ^2.3.2
   cupertino_icons: ^1.0.6
-  http: ^0.13.4 # เพิ่มแพ็คเกจ http
+  http: ^1.2.2 # เพิ่มแพ็คเกจ http
   url_launcher: ^6.0.9  #  เพิ่มแพ็คเกจ url
   qr_code_scanner: ^1.0.0  #  เพิ่มแพ็คเกจ hqr_code_scannerurl
   font_awesome_flutter: ^10.1.0  #  เพิ่มแพ็คเกจ icon font awesome
-  # flutter_dotenv: ^5.0.2 #  เพิ่มแพ็คเกจ env
+  flutter_dotenv: ^5.0.2 #  เพิ่มแพ็คเกจ env
   jwt_decoder: ^2.0.1 #  เพิ่มแพ็คเกจ jwt
-  intl: ^0.17.0 # เพิ่มบรรทัดนี้สำหรับการจัดการรูปแบบวันที่
+  intl: ^0.19.0 # เพิ่มบรรทัดนี้สำหรับการจัดการรูปแบบวันที่
   uuid: ^4.4.2
+  flutter_launcher_icons: ^0.13.1
+  flutter_svg: ^1.0.0
 
 dev_dependencies:
   flutter_test:
@@ -52,10 +52,16 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^3.0.0
+  flutter_lints: ^4.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/logo.png" # ใส่ path ของไฟล์ไอคอนที่คุณเตรียมไว้
+  adaptive_icon_background: "#ffffff" # หรือใช้เป็นรูปภาพ
+  # adaptive_icon_foreground: "assets/icon/foreground_icon.png" # ถ้ามี adaptive icon
 
 # The following section is specific to Flutter packages.
 flutter:
@@ -65,7 +71,16 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  fonts:
+    - family: Kanit
+      fonts:
+        - asset: assets/fonts/Kanit-Regular.ttf
+        - asset: assets/fonts/Kanit-Bold.ttf
+          weight: 700
+          
   assets:
+    - assets/icon/icon-doctor.svg
+    - assets/icon/icon-scan-tag.png
     - assets/images/logo-hutox.jpg
     - assets/images/logo-hutox.png
     - assets/images/logo-hutox-new.jpg
@@ -77,6 +92,7 @@ flutter:
     - assets/images/menu-scan.png
     - assets/images/menu-scan-history.png
     - assets/images/scan-bg.png
+    - .env
 
   # To add assets to your application, add an assets section, like this:
   # assets:

@@ -9,19 +9,19 @@ class HutoxHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: Color(0xFFFF5128),
+        color: Color(0xFFEF4D23),
         padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            SizedBox(height: 0.0), // เพิ่มระยะห่างด้านบนสำหรับ logo
+            SizedBox(height: 50.0), // เพิ่มระยะห่างด้านบนสำหรับ logo
             Image.asset(
               'assets/images/logo-hutox-new.png',
-              height: 60.0, // ปรับขนาดโลโก้ตามความเหมาะสม
+              height: 70.0, // ปรับขนาดโลโก้ตามความเหมาะสม
             ),
-            SizedBox(height: 70.0), // เพิ่มระยะห่างด้านบนสำหรับ logo
+            SizedBox(height: 30.0), // เพิ่มระยะห่างด้านบนสำหรับ logo
 
-            SizedBox(height: 40.0), // เพิ่มระยะห่างระหว่าง logo และปุ่ม
+            SizedBox(height: 30.0), // เพิ่มระยะห่างระหว่าง logo และปุ่ม
             _buildMenuRow(
               context,
               'assets/images/menu-scan.png', // เปลี่ยนเป็น path ของรูปภาพแทน
@@ -69,14 +69,14 @@ class HutoxHomePage extends StatelessWidget {
         );
       },
       child: Container(
-        width: 151, // กำหนดความกว้างเป็น 262
-        height: 256, // กำหนดความสูงเป็น 444
+        width: 180, // กำหนดความกว้างเป็น 262
+        height: 305, // กำหนดความสูงเป็น 444
         // decoration: BoxDecoration(
         //   borderRadius: BorderRadius.circular(10),
         //   border: Border.all(color: Colors.white, width: 2),
         // ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(5),
           child: Image.asset(
             imagePath,
             fit: BoxFit.cover, // ให้รูปภาพครอบคลุมเต็มพื้นที่ของ Container

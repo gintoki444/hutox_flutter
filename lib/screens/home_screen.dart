@@ -1,8 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'hutox_homepage.dart';
+import 'login_screen.dart'; // Import the login screen
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus(); // ตรวจสอบการเข้าสู่ระบบ
+  }
+
+  Future<void> _checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+
+    if (!isLoggedIn) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
+    }
+  }
+
   // ฟังก์ชันสำหรับเปิด URL ในเบราว์เซอร์
   Future<void> _launchURL(String url) async {
     if (await canLaunch(url)) {
@@ -19,8 +44,9 @@ class HomeScreen extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
+              SizedBox(height: 70.0),
               Text(
                 'ตรวจสอบผลิตภัณฑ์',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
@@ -59,7 +85,7 @@ class HomeScreen extends StatelessWidget {
                 },
                 style: ElevatedButton.styleFrom(
                   fixedSize: Size(312, 90),
-                  backgroundColor: Color(0xFFFF5128),
+                  backgroundColor: Color(0xFFEF4D23),
                   padding:
                       EdgeInsets.symmetric(vertical: 14.0, horizontal: 36.0),
                   shape: RoundedRectangleBorder(
@@ -67,7 +93,7 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 child: Image.asset(
-                  'assets/images/logo-hutox-new.jpg',
+                  'assets/images/logo-hutox-new.png',
                   height: 45.0, // ตั้งค่าขนาดโลโก้ตามต้องการ
                 ),
               ),

@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-// import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class TagScanData {
   final String tagCode;
@@ -9,12 +9,28 @@ class TagScanData {
   final String message;
   final String scanStatus;
 
-  TagScanData(
-      {required this.tagCode,
-      required this.scanCount,
-      required this.message,
-      required this.tagId,
-      required this.scanStatus});
+  final int productId;
+  final String name;
+  final String brand;
+  final String manufacturer;
+  final String createdAt;
+  final int prizeId;
+  final String imageUrl;
+
+  TagScanData({
+    required this.tagCode,
+    required this.scanCount,
+    required this.message,
+    required this.tagId,
+    required this.scanStatus,
+    required this.productId,
+    required this.name,
+    required this.brand,
+    required this.manufacturer,
+    required this.createdAt,
+    required this.prizeId,
+    required this.imageUrl,
+  });
 
   factory TagScanData.fromJson(Map<String, dynamic> json) {
     return TagScanData(
@@ -23,14 +39,59 @@ class TagScanData {
       message: json['message'] ?? 'Unknown', // ให้ค่าเริ่มต้นหากเป็น null
       tagId: json['tagId'] ?? 0, // ให้ค่าเริ่มต้นหากเป็น null
       scanStatus: json['scanStatus'] ?? 'Unknown', // ให้ค่าเริ่มต้นหากเป็น null
+      productId: json['productDetails']['product_id'] ??
+          0, // ดึงข้อมูลจาก productDetails
+      name: json['productDetails']['name'] ?? 'Unknown',
+      brand: json['productDetails']['brand'] ?? 'Unknown',
+      manufacturer: json['productDetails']['manufacturer'] ?? 'Unknown',
+      createdAt: json['productDetails']['created_at'] ?? 'Unknown',
+      prizeId: json['productDetails']['prize_id'] ?? 0,
+      imageUrl: json['productDetails']['image_url'] ?? 'Unknown',
     );
   }
 }
 
 class ApiService {
-  // final String baseUrl = dotenv.env['API_BASE_URL'] ?? 'https://asia-southeast1-tagsystem-2a343.cloudfunctions.net/apitag/api';
-  final String baseUrl =
-      'https://asia-southeast1-tagsystem-2a343.cloudfunctions.net/apitag/api';
+  final String baseUrl = dotenv.env['HUTOX_APP_API_URL'] ?? '';
+
+  Future<Map<String, dynamic>?> checkLogin(Map<String, dynamic> data) async {
+    final url = Uri.parse('$baseUrl/users/login');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(data),
+    );
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>> register(
+      String name, String email, String password) async {
+    final url = '$baseUrl/users/register';
+    final headers = {'Content-Type': 'application/json'};
+    final body = json.encode({
+      'username': name,
+      'email': email,
+      'password': password,
+    });
+
+    print(body);
+
+    final response =
+        await http.post(Uri.parse(url), headers: headers, body: body);
+
+    if (response.statusCode == 201) {
+      // หรือ 200 ถ้า API เปลี่ยนกลับมาใช้ status code 200
+      return json.decode(response.body); // ส่งข้อมูล response กลับไป
+    } else {
+      throw Exception(
+          json.decode(response.body)['message'] ?? 'Registration failed');
+    }
+  }
 
   Future<Map<String, dynamic>?> getUserProfiles(String userId) async {
     final url = Uri.parse('$baseUrl/users/profile/$userId');
@@ -41,6 +102,25 @@ class ApiService {
     } else {
       // Handle errors here
       return null;
+    }
+  }
+
+  Future<Map<String, dynamic>> resetPassword(
+      int userId, String newPassword) async {
+    final url = '$baseUrl/users/admin/reset-password';
+    final headers = {'Content-Type': 'application/json'};
+    final body = json.encode({
+      'userId': userId,
+      'newPassword': newPassword,
+    });
+
+    final response =
+        await http.post(Uri.parse(url), headers: headers, body: body);
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Failed to reset password');
     }
   }
 
@@ -137,6 +217,16 @@ class ApiService {
   Future<TagScanData> getTagScanData(String tagCode) async {
     final response =
         await http.get(Uri.parse('$baseUrl/scanLogs/count/$tagCode'));
+    if (response.statusCode == 200) {
+      return TagScanData.fromJson(json.decode(response.body));
+    } else {
+      throw Exception('Failed to load scan count');
+    }
+  }
+
+  Future<TagScanData> getTagUserScanData(String tagCode) async {
+    final response =
+        await http.get(Uri.parse('$baseUrl/scanLogs/count2/$tagCode'));
     if (response.statusCode == 200) {
       return TagScanData.fromJson(json.decode(response.body));
     } else {

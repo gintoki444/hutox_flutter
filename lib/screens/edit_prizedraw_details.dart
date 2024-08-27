@@ -94,7 +94,7 @@ class _EditPrizedrawDetailsState extends State<EditPrizedrawDetails> {
       appBar: AppBar(
         title: Text('Edit Prizedraw Details'),
       ),
-      backgroundColor: Color(0xFFFF5128), // ตั้งค่าสีพื้นหลังของ Scaffold
+      backgroundColor: Color(0xFFEF4D23), // ตั้งค่าสีพื้นหลังของ Scaffold
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -163,11 +163,19 @@ class _EditPrizedrawDetailsState extends State<EditPrizedrawDetails> {
       child: TextFormField(
         controller: controller,
         decoration: InputDecoration(
-            labelText: label,
-            prefixIcon: Icon(icon),
-            prefixIconColor: Colors.white,
-            labelStyle: TextStyle(
-                color: myFocusNode.hasFocus ? Colors.white : Colors.white)),
+          labelText: label,
+          prefixIcon: Icon(icon),
+          prefixIconColor: Colors.white,
+          labelStyle: TextStyle(
+              color: myFocusNode.hasFocus ? Colors.white : Colors.white),
+          hintStyle: TextStyle(color: Colors.white),
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+          ),
+        ),
         validator: isRequired
             ? (value) {
                 if (value == null || value.isEmpty) {

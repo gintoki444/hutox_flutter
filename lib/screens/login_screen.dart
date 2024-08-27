@@ -1,9 +1,10 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'home_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../services/api/api_service.dart';
+import '../widgets/custom_checkbox.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -13,9 +14,37 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final ApiService _apiService =
+      ApiService(); // Create an instance of ApiService
   bool _isLoading = false;
   bool _obscureText = true;
   bool _isAgreed = false; // ตัวแปรสำหรับเก็บสถานะของ Checkbox
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus(); // เพิ่มฟังก์ชันการตรวจสอบการเข้าสู่ระบบ
+  }
+
+  Future<void> _checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+
+    if (isLoggedIn) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+      );
+    }
+  }
+
+  Future<void> _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 
   // ฟังก์ชันสำหรับตรวจสอบรูปแบบ email
   bool _isEmailValid(String email) {
@@ -24,7 +53,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> login(String email, String password) async {
-    // ตรวจสอบว่ากรอก email และ password ถูกต้องหรือไม่
     if (!_isEmailValid(email)) {
       _showErrorDialog('Invalid email format');
       return;
@@ -34,24 +62,18 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    final url =
-        'https://asia-southeast1-tagsystem-2a343.cloudfunctions.net/apitag/api/users/login';
-    final headers = {'Content-Type': 'application/json'};
-    final body = json.encode({'email': email, 'password': password});
-
     setState(() {
       _isLoading = true;
     });
 
-    final response =
-        await http.post(Uri.parse(url), headers: headers, body: body);
+    final loginData = {'email': email, 'password': password};
+    final responseData = await _apiService.checkLogin(loginData);
 
     setState(() {
       _isLoading = false;
     });
 
-    if (response.statusCode == 200) {
-      final responseData = json.decode(response.body);
+    if (responseData != null) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isLoggedIn', true);
       await prefs.setString('token', responseData['token']);
@@ -86,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          color: Color(0xFFFF5128),
+          color: Color(0xFFEF4D23),
           image: DecorationImage(
             image: AssetImage(
                 "assets/images/login-bg.png"), // ใส่ path ของรูปภาพที่ต้องการใช้เป็นพื้นหลัง
@@ -96,21 +118,21 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Align(
           alignment: Alignment.topCenter, // เนื้อหาจะอยู่ด้านบน
           child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 24.0),
+            padding: EdgeInsets.symmetric(horizontal: 40.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                SizedBox(height: 40.0),
+                SizedBox(height: 50.0),
                 Image.asset(
                   'assets/images/logo-hutox.png',
-                  height: 180.0, // ตั้งค่าขนาดโลโก้ตามต้องการ
+                  height: 210.0, // ตั้งค่าขนาดโลโก้ตามต้องการ
                 ),
                 SizedBox(height: 20.0),
                 TextField(
                   controller: _emailController,
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.white, fontSize: 20),
                   decoration: InputDecoration(
-                    hintText: 'Email',
+                    hintText: 'E-mail',
                     hintStyle: TextStyle(color: Colors.white),
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.white),
@@ -124,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 TextField(
                   controller: _passwordController,
                   obscureText: _obscureText,
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.white, fontSize: 20),
                   decoration: InputDecoration(
                     hintText: 'Password',
                     hintStyle: TextStyle(color: Colors.white),
@@ -149,24 +171,48 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: 80.0),
-                Row(
-                  children: <Widget>[
-                    Checkbox(
-                      value: _isAgreed,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          _isAgreed = value ?? false;
-                        });
-                      },
+                SizedBox(height: 100.0),
+                Container(
+                  padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width *
+                        0.05, // Padding 5% จากซ้าย
+                    right: MediaQuery.of(context).size.width *
+                        0.05, // Padding 5% จากขวา
+                    top: 0,
+                    bottom: 0,
+                  ),
+                  child: InkWell(
+                    onTap: () {
+                      setState(() {
+                        _isAgreed = !_isAgreed;
+                      });
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment
+                          .center, // จัดให้ข้อความอยู่ตรงกลางในแนวนอน
+                      crossAxisAlignment: CrossAxisAlignment
+                          .center, // จัดให้ข้อความอยู่ตรงกลางในแนวตั้ง
+                      children: <Widget>[
+                        CustomCheckbox(
+                          value: _isAgreed,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              _isAgreed = value ?? false;
+                            });
+                          },
+                        ),
+                        SizedBox(
+                            width:
+                                10), // เพิ่มระยะห่างระหว่าง Checkbox และ Text
+                        Text(
+                          'I agree to the terms and conditions',
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                      ],
                     ),
-                    Text(
-                      'I agree to the terms and conditions',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ],
+                  ),
                 ),
-                SizedBox(height: 20.0),
+                SizedBox(height: 30.0),
                 _isLoading
                     ? CircularProgressIndicator()
                     : OutlinedButton(
@@ -179,14 +225,15 @@ class _LoginScreenState extends State<LoginScreen> {
                             : null,
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(
-                              color: Colors.white, width: 1), // เส้นขอบสีขาว
+                              color: Colors.white, width: 2), // เส้นขอบสีขาว
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
                         ),
                         child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 14.0),
-                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(vertical: 17.0),
+                          // width: double.infinity,
+                          width: MediaQuery.of(context).size.width * 0.7,
                           child: Text(
                             'Member Login',
                             textAlign: TextAlign.center,
@@ -198,33 +245,108 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                 SizedBox(height: 20.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    IconButton(
-                      icon: Icon(Icons.facebook, color: Colors.white),
-                      onPressed: () {},
-                    ),
-                    IconButton(
-                      icon: FaIcon(FontAwesomeIcons.instagram,
-                          color: Colors.white), // เปลี่ยนเป็นไอคอน Instagram
-                      onPressed: () {},
-                    ),
-                    IconButton(
-                      icon: FaIcon(FontAwesomeIcons.xTwitter,
-                          color: Colors.white), // เปลี่ยนเป็นไอคอน fa-x-twitter
-                      onPressed: () {},
-                    ),
-                  ],
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.68,
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                            ),
+                            child: IconButton(
+                              iconSize: 34,
+                              icon: FaIcon(FontAwesomeIcons.facebookF,
+                                  color: Color(0xFFEF4D23)),
+                              onPressed: () {
+                                _launchURL(
+                                    'https://www.facebook.com/thehutalk');
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                      Spacer(),
+                      Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                        ),
+                        child: IconButton(
+                          iconSize: 38,
+                          icon: FaIcon(FontAwesomeIcons.instagram,
+                              color: Color(0xFFEF4D23)),
+                          onPressed: () {
+                            _launchURL('https://www.instagram.com/hutalk_th');
+                          },
+                        ),
+                      ),
+                      Spacer(),
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                            ),
+                            child: IconButton(
+                              iconSize: 38,
+                              icon: FaIcon(FontAwesomeIcons.xTwitter,
+                                  color: Color(0xFFEF4D23)),
+                              onPressed: () {
+                                _launchURL(
+                                    'https://www.instagram.com/hutalk_th');
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 SizedBox(height: 20.0),
                 TextButton(
                   onPressed: () {
                     Navigator.pushNamed(context, '/register');
                   },
+                  style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size(50, 30),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      alignment: Alignment.centerLeft),
                   child: Text(
                     "Don't have an account? Register",
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.normal),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/welcome');
+                  },
+                  style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size(50, 30),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      alignment: Alignment.centerLeft),
+                  child: Text(
+                    "Don't have an account? and Scan tag",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.normal),
                   ),
                 ),
                 SizedBox(height: 20.0),
