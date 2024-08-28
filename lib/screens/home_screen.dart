@@ -1,8 +1,9 @@
+import 'package:dml_verify_tags/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'hutox_homepage.dart';
-import 'login_screen.dart'; // Import the login screen
+// import 'hutox_homepage.dart';
+// import 'login_screen.dart'; // Import the login screen
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -10,23 +11,23 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  @override
-  void initState() {
-    super.initState();
-    _checkLoginStatus(); // ตรวจสอบการเข้าสู่ระบบ
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _checkLoginStatus(); // ตรวจสอบการเข้าสู่ระบบ
+  // }
 
-  Future<void> _checkLoginStatus() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+  // Future<void> _checkLoginStatus() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
-    if (!isLoggedIn) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
-      );
-    }
-  }
+  //   if (!isLoggedIn) {
+  //     Navigator.pushReplacement(
+  //       context,
+  //       MaterialPageRoute(builder: (context) => LoginScreen()),
+  //     );
+  //   }
+  // }
 
   // ฟังก์ชันสำหรับเปิด URL ในเบราว์เซอร์
   Future<void> _launchURL(String url) async {
@@ -80,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => HutoxHomePage()),
+                    MaterialPageRoute(builder: (context) => WelcomeScreen()),
                   );
                 },
                 style: ElevatedButton.styleFrom(

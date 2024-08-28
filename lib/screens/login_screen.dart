@@ -1,6 +1,7 @@
+import 'package:dml_verify_tags/screens/hutox_homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'home_screen.dart';
+// import 'home_screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../services/api/api_service.dart';
 import '../widgets/custom_checkbox.dart';
@@ -33,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (isLoggedIn) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
+        MaterialPageRoute(builder: (context) => HutoxHomePage()),
       );
     }
   }
@@ -79,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
       await prefs.setString('token', responseData['token']);
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
+        MaterialPageRoute(builder: (context) => HutoxHomePage()),
       );
     } else {
       _showErrorDialog('Invalid email or password');
@@ -332,6 +333,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         fontWeight: FontWeight.normal),
                   ),
                 ),
+                SizedBox(height: 10.0),
                 TextButton(
                   onPressed: () {
                     Navigator.pushNamed(context, '/welcome');
@@ -341,12 +343,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       minimumSize: Size(50, 30),
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       alignment: Alignment.centerLeft),
-                  child: Text(
-                    "Don't have an account? and Scan tag",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.normal),
+                  child: FaIcon(
+                    FontAwesomeIcons.circleLeft,
+                    color: Colors.white,
+                    size: 50,
                   ),
                 ),
                 SizedBox(height: 20.0),

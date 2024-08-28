@@ -79,8 +79,10 @@ flutter:
           weight: 700
           
   assets:
+    - assets/icon/icon-hospital.svg
     - assets/icon/icon-doctor.svg
     - assets/icon/icon-scan-tag.png
+    - assets/icon/icon-scan.svg
     - assets/images/logo-hutox.jpg
     - assets/images/logo-hutox.png
     - assets/images/logo-hutox-new.jpg

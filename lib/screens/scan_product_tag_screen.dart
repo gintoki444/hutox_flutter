@@ -135,14 +135,20 @@ class _ScanProductTagScreenState extends State<ScanProductTagScreen> {
         await _apiService.enterPrizeDetail(tagScanData.tagId);
 
         _showSuccessDialog(
-          tagScanData.tagCode,
-          tagScanData.name,
-          tagScanData.tagId,
-          tagScanData.message,
-          tagScanData.imageUrl,
-        );
+            tagScanData.tagCode,
+            tagScanData.name,
+            tagScanData.tagId,
+            tagScanData.message,
+            tagScanData.imageUrl,
+            tagScanData.scanStatus);
       } else if (tagScanData.scanStatus == 'verify-warning') {
-        _showErrorDialog(tagCode, tagScanData.message, tagScanData.scanStatus);
+        _showSuccessDialog(
+            tagScanData.tagCode,
+            tagScanData.name,
+            tagScanData.tagId,
+            tagScanData.message,
+            tagScanData.imageUrl,
+            tagScanData.scanStatus);
       }
     } catch (e) {
       print('Error during scan data processing: $e');
@@ -151,8 +157,18 @@ class _ScanProductTagScreenState extends State<ScanProductTagScreen> {
     }
   }
 
-  void _showSuccessDialog(
-      String tagCode, String name, int tagId, String message, String imageUrl) {
+  void _showSuccessDialog(String tagCode, String name, int tagId,
+      String message, String imageUrl, String status) {
+    IconData icon;
+
+    // กำหนดไอคอนตามค่า status
+    if (status == "verify-warning") {
+      icon = FontAwesomeIcons.circleExclamation;
+    } else if (status == "verify-true") {
+      icon = FontAwesomeIcons.circleCheck;
+    } else {
+      icon = FontAwesomeIcons.circleCheck; // ค่าเริ่มต้นหากไม่ตรงกับ status ใด
+    }
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -161,8 +177,7 @@ class _ScanProductTagScreenState extends State<ScanProductTagScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               SizedBox(height: 40),
-              Icon(FontAwesomeIcons.circleCheck,
-                  size: 100, color: Color(0xFFEF4D23)),
+              Icon(icon, size: 70, color: Color(0xFFEF4D23)),
               SizedBox(height: 20),
               Text(
                 "สินค้านี้เป็นของแท้",
@@ -203,13 +218,15 @@ class _ScanProductTagScreenState extends State<ScanProductTagScreen> {
                         fontWeight: FontWeight.bold,
                         color: Color(0xFFEF4D23),
                         fontSize: 18,
+                        fontFamily: 'Kanit', // กำหนดฟอนต์ Kanit
                       ),
                     ),
                     TextSpan(
-                      text: "\n" + message.replaceAll(tagCode, ''),
+                      text: "\n" + message.replaceAll('รหัส: ' + tagCode, ''),
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 16,
+                        fontFamily: 'Kanit', // กำหนดฟอนต์ Kanit
                       ),
                     ),
                   ],
@@ -218,7 +235,7 @@ class _ScanProductTagScreenState extends State<ScanProductTagScreen> {
               SizedBox(height: 20),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  fixedSize: Size(200, 30),
+                  fixedSize: Size(150, 30),
                   backgroundColor: Color(0xFFEF4D23),
                   padding:
                       EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
@@ -227,19 +244,24 @@ class _ScanProductTagScreenState extends State<ScanProductTagScreen> {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.pop(context);
+                  // Navigator.pop(context);
                   setState(() {
                     result = null;
                   });
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditPrizedrawDetails(tagId: tagId),
-                    ),
-                  );
+                  if (status == 'verify-warning') {
+                    Navigator.pop(context);
+                  } else if (status == 'verify-true') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            EditPrizedrawDetails(tagId: tagId),
+                      ),
+                    );
+                  }
                 },
                 child: Text(
-                  'ลงทะเบียนรับสินค้า',
+                  status == 'verify-warning' ? 'OK' : 'ลงทะเบียน',
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -288,6 +310,7 @@ class _ScanProductTagScreenState extends State<ScanProductTagScreen> {
                         fontWeight: FontWeight.bold,
                         color: Color(0xFFEF4D23),
                         fontSize: 18,
+                        fontFamily: 'Kanit', // กำหนดฟอนต์ Kanit
                       ),
                     ),
                     TextSpan(
@@ -297,6 +320,7 @@ class _ScanProductTagScreenState extends State<ScanProductTagScreen> {
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 16,
+                        fontFamily: 'Kanit', // กำหนดฟอนต์ Kanit
                       ),
                     ),
                   ],

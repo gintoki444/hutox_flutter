@@ -1,8 +1,9 @@
 // import 'dart:convert';
 // import 'package:http/http.dart' as http;
+import 'package:dml_verify_tags/screens/hutox_homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'home_screen.dart';
+// import 'home_screen.dart';
 import '../services/api/api_service.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -68,7 +69,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           await prefs.setString('token', checkLoginData['token']);
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => HomeScreen()),
+            MaterialPageRoute(builder: (context) => HutoxHomePage()),
           );
         }
         _showSuccessDialog('Registration successful!');
@@ -114,7 +115,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               Navigator.pop(context);
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => HomeScreen()),
+                MaterialPageRoute(builder: (context) => HutoxHomePage()),
               );
             },
             child: Text('OK'),

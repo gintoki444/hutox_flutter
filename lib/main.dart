@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => isLoggedIn ? HomeScreen() : WelcomeScreen(),
+        '/': (context) => isLoggedIn ? HutoxHomePage() : HomeScreen(),
         '/welcome': (context) => WelcomeScreen(),
         '/login': (context) => LoginScreen(),
         '/register': (context) => RegisterScreen(),

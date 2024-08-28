@@ -31,7 +31,7 @@ class CustomCheckbox extends StatelessWidget {
         child: value
             ? Icon(
                 Icons.check,
-                size: 16.0,
+                size: 20.0,
                 color: Color(0xFFFF5128), // สีเครื่องหมายถูก
               )
             : null,

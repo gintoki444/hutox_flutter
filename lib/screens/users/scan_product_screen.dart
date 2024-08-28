@@ -182,6 +182,7 @@ class _ScanProductScreenState extends State<ScanProductScreen> {
                         fontWeight: FontWeight.bold,
                         color: Color(0xFFEF4D23),
                         fontSize: 18,
+                        fontFamily: 'Kanit', // กำหนดฟอนต์ Kanit
                       ),
                     ),
                     TextSpan(
@@ -189,6 +190,7 @@ class _ScanProductScreenState extends State<ScanProductScreen> {
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 16,
+                        fontFamily: 'Kanit', // กำหนดฟอนต์ Kanit
                       ),
                     ),
                   ],
@@ -254,6 +256,7 @@ class _ScanProductScreenState extends State<ScanProductScreen> {
                         fontWeight: FontWeight.bold,
                         color: Color(0xFFEF4D23),
                         fontSize: 18,
+                        fontFamily: 'Kanit', // กำหนดฟอนต์ Kanit
                       ),
                     ),
                     TextSpan(
@@ -263,6 +266,7 @@ class _ScanProductScreenState extends State<ScanProductScreen> {
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 16,
+                        fontFamily: 'Kanit', // กำหนดฟอนต์ Kanit
                       ),
                     ),
                   ],

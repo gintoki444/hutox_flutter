@@ -49,52 +49,55 @@ class WelcomeScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
-                child: Image.asset(
-                  'assets/icon/icon-scan-tag.png',
-                  height: 150, // ตั้งค่าขนาดโลโก้ตามต้องการ
+                child: Column(
+                  mainAxisAlignment:
+                      MainAxisAlignment.center, // จัดให้อยู่กึ่งกลาง
+                  children: [
+                    SvgPicture.asset(
+                      'assets/icon/icon-scan.svg',
+                      height: 80, // ตั้งค่าขนาดไอคอนตามต้องการ
+                    ),
+                    SizedBox(height: 10), // เพิ่มระยะห่างระหว่างไอคอนกับข้อความ
+                    Text(
+                      "Scan Product (ลูกค้า)",
+                      style: TextStyle(fontSize: 18, color: Color(0xFFef4d23)),
+                    ),
+                  ],
                 ),
               ),
               SizedBox(height: 20.0),
               ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginScreen()),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    fixedSize: Size(312, 150),
-                    backgroundColor: Color(0xFFFFFFFF),
-                    padding:
-                        EdgeInsets.symmetric(vertical: 0.0, horizontal: 36.0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  fixedSize: Size(312, 150),
+                  backgroundColor: Color(0xFFFFFFFF),
+                  padding:
+                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 36.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  child: Column(children: [
+                ),
+                child: Column(
+                  mainAxisAlignment:
+                      MainAxisAlignment.center, // จัดให้อยู่กึ่งกลาง
+                  children: [
                     SvgPicture.asset(
-                      'assets/icon/icon-doctor.svg',
-                      height: 110, // ตั้งค่าขนาดไอคอนตามต้องการ
+                      'assets/icon/icon-hospital.svg',
+                      height: 90, // ตั้งค่าขนาดไอคอนตามต้องการ
                     ),
-                    Text("คลินิก/ร้านค้า",
-                        style:
-                            TextStyle(fontSize: 18, color: Color(0xFFef4d23)))
-                  ])
-                  // child: Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     SvgPicture.asset(
-                  //       'assets/icon/icon-doctor.svg',
-                  //       height: 45.0, // ตั้งค่าขนาดไอคอนตามต้องการ
-                  //     ),
-                  //     SizedBox(width: 10), // เพิ่มระยะห่างระหว่างไอคอนและข้อความ
-                  //     Text(
-                  //       'สำหรับคลินิก/ร้านค้า',
-                  //       style: TextStyle(fontSize: 16, color: Colors.white),
-                  //     ),
-                  //   ],
-                  // ),
-                  ),
+                    SizedBox(height: 10), // เพิ่มระยะห่างระหว่างไอคอนกับข้อความ
+                    Text(
+                      "คลินิก/ร้านค้า",
+                      style: TextStyle(fontSize: 18, color: Color(0xFFef4d23)),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
