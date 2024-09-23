@@ -59,7 +59,7 @@ dev_dependencies:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/icon/logo.png" # ใส่ path ของไฟล์ไอคอนที่คุณเตรียมไว้
+  image_path: "assets/icon/new-logo-512.png" # ใส่ path ของไฟล์ไอคอนที่คุณเตรียมไว้
   adaptive_icon_background: "#ffffff" # หรือใช้เป็นรูปภาพ
   # adaptive_icon_foreground: "assets/icon/foreground_icon.png" # ถ้ามี adaptive icon
 

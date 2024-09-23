@@ -2,7 +2,7 @@
     <!-- เพิ่มบรรทัดนี้เพื่อให้แอปของคุณสามารถใช้งานอินเทอร์เน็ตได้ -->
     <uses-permission android:name="android.permission.INTERNET" />
     <application
-        android:label="Verify Tags"
+        android:label="Dermalink"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

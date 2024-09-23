@@ -29,9 +29,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _checkLoginStatus() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    // String? token = prefs.getString('token'); // ตรวจสอบ token ใน SharedPreferences
+
     bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
-    if (isLoggedIn) {
+    bool token =
+        prefs.getBool('token') ?? false; // ตรวจสอบ token ใน SharedPreferences
+
+    if (isLoggedIn && token) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HutoxHomePage()),
@@ -74,7 +79,8 @@ class _LoginScreenState extends State<LoginScreen> {
       _isLoading = false;
     });
 
-    if (responseData != null) {
+    print(responseData);
+    if (responseData != null && responseData['token'] != null) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isLoggedIn', true);
       await prefs.setString('token', responseData['token']);
@@ -82,24 +88,42 @@ class _LoginScreenState extends State<LoginScreen> {
         context,
         MaterialPageRoute(builder: (context) => HutoxHomePage()),
       );
-    } else {
-      _showErrorDialog('Invalid email or password');
+    } else if (responseData != null && responseData['message'] != null) {
+      // แสดง message จาก API ด้วย SnackBar
+      _showErrorDialog(responseData['message']);
     }
+    // {
+    //   _showErrorDialog('Invalid email or password');
+    // }
   }
 
   // ฟังก์ชันแสดงข้อความแจ้งเตือน
   void _showErrorDialog(String message) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Login Failed'),
+    // ซ่อน SnackBar ก่อนหน้าถ้ามี
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+    // แสดง SnackBar ที่ด้านบนของหน้าจอ
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
         content: Text(message),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('OK'),
-          ),
-        ],
+        backgroundColor: Colors.red, // สีพื้นหลังของ SnackBar
+        duration: Duration(seconds: 3), // ระยะเวลาแสดงผล SnackBar
+        behavior: SnackBarBehavior.floating, // ทำให้ SnackBar ลอยอยู่
+        margin: EdgeInsets.only(
+          top: 300, // กำหนดให้แสดงใกล้ขอบด้านบน
+          left: 10,
+          right: 10,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10), // มุมโค้งของ SnackBar
+        ),
+        // action: SnackBarAction(
+        //   label: 'OK',
+        //   textColor: Colors.white,
+        //   onPressed: () {
+        //     // ทำอะไรบางอย่างเมื่อกดปุ่ม OK บน SnackBar
+        //   },
+        // ),
       ),
     );
   }

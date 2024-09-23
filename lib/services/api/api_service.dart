@@ -63,9 +63,30 @@ class ApiService {
     );
 
     if (response.statusCode == 200) {
-      return json.decode(response.body);
+      try {
+        return json.decode(response.body);
+      } catch (e) {
+        print('Error decoding response: $e');
+        return {
+          'message': 'An error occurred while processing the response',
+        };
+      }
     } else {
-      return null;
+      try {
+        final errorData = json.decode(response.body);
+        // ตรวจสอบว่า message ไม่เป็น null และเป็น String
+        final message =
+            errorData['message']?.toString() ?? 'An unknown error occurred';
+        print(message); // แสดงใน console
+        return {
+          'message': message, // ส่งกลับค่า message เพื่อแสดงผล
+        };
+      } catch (e) {
+        print('Error decoding error response: $e');
+        return {
+          'message': 'An error occurred while processing the error response',
+        };
+      }
     }
   }
 
@@ -78,8 +99,6 @@ class ApiService {
       'email': email,
       'password': password,
     });
-
-    print(body);
 
     final response =
         await http.post(Uri.parse(url), headers: headers, body: body);

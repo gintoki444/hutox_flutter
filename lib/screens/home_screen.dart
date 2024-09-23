@@ -43,6 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 24.0),
+        color: Color(0xFFFFFFFF),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,

@@ -1,8 +1,8 @@
 // import 'dart:convert';
 // import 'package:http/http.dart' as http;
-import 'package:dml_verify_tags/screens/hutox_homepage.dart';
+// import 'package:dml_verify_tags/screens/hutox_homepage.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 // import 'home_screen.dart';
 import '../services/api/api_service.dart';
 
@@ -34,7 +34,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final password = _passwordController.text;
     final confirmPassword = _confirmPasswordController.text;
 
-    final loginData = {'email': email, 'password': password};
+    // final loginData = {'email': email, 'password': password};
 
     if (name.isEmpty) {
       _showErrorDialog('Name cannot be empty');
@@ -62,17 +62,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       // ตรวจสอบว่า responseData มี userId หรือไม่
       if (responseData['userId'] != null) {
-        final checkLoginData = await _apiService.checkLogin(loginData);
-        if (checkLoginData != null) {
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          await prefs.setBool('isLoggedIn', true);
-          await prefs.setString('token', checkLoginData['token']);
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => HutoxHomePage()),
-          );
-        }
-        _showSuccessDialog('Registration successful!');
+        // final checkLoginData = await _apiService.checkLogin(loginData);
+        // if (checkLoginData != null) {
+        //   SharedPreferences prefs = await SharedPreferences.getInstance();
+        //   await prefs.setBool('isLoggedIn', true);
+        //   await prefs.setString('token', checkLoginData['token']);
+        //   Navigator.pushReplacement(
+        //     context,
+        //     MaterialPageRoute(builder: (context) => HutoxHomePage()),
+        //   );
+        // }
+        _showSuccessDialog(
+            'กรุณาตรวจสอบ E-mail :' + email + 'เพื่อยืนยันตัวตน');
       } else {
         _showErrorDialog('Registration failed: ${responseData['message']}');
       }
@@ -113,10 +114,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => HutoxHomePage()),
-              );
+              // Navigator.pushReplacement(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => HutoxHomePage()),
+              // );
             },
             child: Text('OK'),
           ),
