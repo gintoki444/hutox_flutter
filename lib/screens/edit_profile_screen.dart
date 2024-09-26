@@ -75,14 +75,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         bool success = await _apiService.updateUserProfile(userId, data);
         if (success) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Profile updated successfully')),
+            SnackBar(
+                backgroundColor: Color.fromARGB(205, 64, 255, 83),
+                content: Text('แก้ไขสำเร็จ')),
           );
 
           // หลังจากบันทึกสำเร็จ ให้กลับไปที่หน้า ViewProfileScreen
           Navigator.pushReplacementNamed(context, '/view_profile');
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to update profile')),
+            SnackBar(content: Text('แก้ไขไม่สำเร็จ')),
           );
         }
       }
@@ -118,13 +120,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         children: <Widget>[
                           _buildProfileItem(
                             Icons.person,
-                            'Username',
+                            'คลินิก/ร้านค้า',
                             username!,
                             enabled: false,
                           ),
                           _buildProfileItem(
                             Icons.email,
-                            'Email',
+                            'อีเมล์',
                             email!,
                             enabled: false,
                           ),
@@ -135,7 +137,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                           _buildTextField(
                             Icons.phone,
-                            'Phone',
+                            'เบอร์โทรศัพท์',
                             phoneController,
                           ),
                           _buildTextField(
@@ -145,13 +147,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                           _buildTextField(
                             Icons.language,
-                            'Country',
+                            'ประเทศ',
                             countryController,
                           ),
                           SizedBox(height: 20.0),
                           _buildActionButton(
                             context,
-                            'Save Changes',
+                            'บันทึก',
                             Colors.red,
                             () {
                               if (_formKey.currentState!.validate()) {
@@ -179,12 +181,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
         decoration: InputDecoration(
-          labelText: title,
-          prefixIcon: Icon(icon),
-        ),
+            labelText: title,
+            prefixIcon: Icon(
+              icon,
+              color: Colors.white,
+            ),
+            labelStyle: TextStyle(color: Colors.white)),
         initialValue: value,
         enabled: enabled,
-        style: TextStyle(color: enabled ? Colors.white : Colors.grey),
+        style: TextStyle(
+            color: enabled
+                ? Colors.white
+                : const Color.fromARGB(255, 205, 205, 205)),
       ),
     );
   }

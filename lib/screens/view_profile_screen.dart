@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import '../services/api/api_service.dart';
 import 'login_screen.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ViewProfileScreen extends StatefulWidget {
   @override
@@ -60,12 +61,13 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
       appBar: AppBar(
         title: Text('View Profile'),
       ),
+      backgroundColor: Color(0xFFEF4D23), // ตั้งค่าสีพื้นหลังของ Scaffold
       body: userProfile == null
           ? Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               // ใช้ SingleChildScrollView เพื่อให้สามารถเลื่อนหน้าได้
               child: Container(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(20.0),
                 color: Color(0xFFEF4D23),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -82,37 +84,43 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                           SizedBox(height: 20.0),
                           CircleAvatar(
                             radius: 50,
-                            backgroundImage:
-                                NetworkImage('https://picsum.photos/200'),
+                            backgroundColor: Colors.white,
+                            child: SvgPicture.asset(
+                              'assets/icon/icon-profile-cicle.svg',
+                              height: 80, // ตั้งค่าขนาดไอคอนตามต้องการ
+                              width: 80, // ตั้งค่าขนาดไอคอนตามต้องการ
+                              fit: BoxFit.cover,
+                              color: Color(0xFFEF4D23),
+                            ),
                           ),
                           SizedBox(height: 8.0),
-                          TextButton(
-                            onPressed: () {
-                              // Implement edit photo functionality
-                            },
-                            child: Text('Edit Photo',
-                                style: TextStyle(color: Colors.blue)),
-                          ),
+                          // TextButton(
+                          //   onPressed: () {
+                          //     // Implement edit photo functionality
+                          //   },
+                          //   child: Text('Edit Photo',
+                          //       style: TextStyle(color: Colors.blue)),
+                          // ),
                         ],
                       ),
                     ),
                     SizedBox(height: 16.0),
-                    _buildProfileItem(Icons.person, 'Username',
-                        userProfile!['username'] ?? 'Not available'),
-                    _buildProfileItem(Icons.email, 'Email',
-                        userProfile!['email'] ?? 'Not available'),
-                    _buildProfileItem(Icons.card_membership, 'Full Name',
-                        userProfile!['fullName'] ?? 'Not available'),
-                    _buildProfileItem(Icons.phone, 'Phone',
-                        userProfile!['phoneNumber'] ?? 'Not available'),
-                    _buildProfileItem(Icons.location_on, 'Address',
-                        userProfile!['address'] ?? 'Not available'),
-                    _buildProfileItem(Icons.language, 'Country',
-                        userProfile!['country'] ?? 'Not available'),
+                    _buildProfileItem(Icons.person, 'คลินิก/ร้านค้า',
+                        userProfile!['username'] ?? 'ไม่มีข้อมูล'),
+                    _buildProfileItem(Icons.email, 'อีเมล์',
+                        userProfile!['email'] ?? 'ไม่มีข้อมูล'),
+                    _buildProfileItem(Icons.card_membership, 'ชื่อ-นามสกุล',
+                        userProfile!['fullName'] ?? 'ไม่มีข้อมูล'),
+                    _buildProfileItem(Icons.phone, 'เบอร์โทรศัพท์',
+                        userProfile!['phoneNumber'] ?? 'ไม่มีข้อมูล'),
+                    _buildProfileItem(Icons.location_on, 'ที่อยู่',
+                        userProfile!['address'] ?? 'ไม่มีข้อมูล'),
+                    _buildProfileItem(Icons.language, 'ประเทศ',
+                        userProfile!['country'] ?? 'ไม่มีข้อมูล'),
                     SizedBox(height: 20.0),
                     _buildActionButton(
                       context,
-                      'Edit Profile',
+                      'แก้ไขโปรไฟล์',
                       Colors.yellow,
                       () {
                         Navigator.pushNamed(context, '/edit_profile');
@@ -121,7 +129,7 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                     SizedBox(height: 10.0),
                     _buildActionButton(
                       context,
-                      'Log Out',
+                      'ออกจากระบบ',
                       Colors.red,
                       () async {
                         SharedPreferences prefs =
@@ -158,7 +166,7 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
               Icon(icon, color: Colors.white),
               SizedBox(width: 10.0),
               // ตรวจสอบว่าค่า value ไม่เป็น null ถ้าเป็น null ให้แสดงค่า default
-              Text(value ?? 'Not available',
+              Text(value ?? 'ไม่มีข้อมูล',
                   style: TextStyle(color: Colors.white)),
             ],
           ),

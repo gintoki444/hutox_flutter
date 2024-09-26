@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-// import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'login_screen.dart';
 import 'users/scan_product_screen.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+// import '../screens/scan_qr_code_screen.dart'; // นำเข้าหน้าสแกน QR code
 
 class WelcomeScreen extends StatelessWidget {
   // ฟังก์ชันสำหรับเปิด URL ในเบราว์เซอร์
@@ -30,7 +31,7 @@ class WelcomeScreen extends StatelessWidget {
                 'assets/images/logo-hutox-new.png',
                 height: 70.0, // ปรับขนาดโลโก้ตามความเหมาะสม
               ),
-              SizedBox(height: 30.0), // เพิ่มระยะห่างด้านบนสำหรับ logo
+              SizedBox(height: 30.0),
               SizedBox(height: 40.0),
               ElevatedButton(
                 onPressed: () {
@@ -57,9 +58,9 @@ class WelcomeScreen extends StatelessWidget {
                       'assets/icon/icon-scan.svg',
                       height: 80, // ตั้งค่าขนาดไอคอนตามต้องการ
                     ),
-                    SizedBox(height: 10), // เพิ่มระยะห่างระหว่างไอคอนกับข้อความ
+                    SizedBox(height: 10),
                     Text(
-                      "Scan Product (ลูกค้า)",
+                      "สแกนสินค้า (ลูกค้า)",
                       style: TextStyle(fontSize: 18, color: Color(0xFFef4d23)),
                     ),
                   ],
@@ -90,7 +91,7 @@ class WelcomeScreen extends StatelessWidget {
                       'assets/icon/icon-hospital.svg',
                       height: 90, // ตั้งค่าขนาดไอคอนตามต้องการ
                     ),
-                    SizedBox(height: 10), // เพิ่มระยะห่างระหว่างไอคอนกับข้อความ
+                    SizedBox(height: 10),
                     Text(
                       "คลินิก/ร้านค้า",
                       style: TextStyle(fontSize: 18, color: Color(0xFFef4d23)),
@@ -98,6 +99,23 @@ class WelcomeScreen extends StatelessWidget {
                   ],
                 ),
               ),
+              SizedBox(height: 20.0), // เพิ่มระยะห่างระหว่างปุ่ม
+              TextButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/');
+                },
+                style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    minimumSize: Size(50, 30),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    alignment: Alignment.centerLeft),
+                child: FaIcon(
+                  FontAwesomeIcons.circleLeft,
+                  color: Colors.white,
+                  size: 50,
+                ),
+              ),
+              SizedBox(height: 20.0),
             ],
           ),
         ),

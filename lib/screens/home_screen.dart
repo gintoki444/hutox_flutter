@@ -42,20 +42,25 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 24.0),
         color: Color(0xFFFFFFFF),
+        padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               SizedBox(height: 70.0),
+              Image.asset(
+                'assets/icon/new-logo-512.png',
+                height: 70.0, // ปรับขนาดโลโก้ตามความเหมาะสม
+              ),
+              SizedBox(height: 20.0),
               Text(
                 'ตรวจสอบผลิตภัณฑ์',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 8.0),
               Text(
-                '(VERIFY YOUR PRODUCT)',
+                '(Dermalink Verify Product)',
                 style: TextStyle(fontSize: 16, color: Colors.grey),
               ),
               SizedBox(height: 40.0),

@@ -77,13 +77,13 @@ class _EditPrizedrawDetailsState extends State<EditPrizedrawDetails> {
     bool success = await _apiService.updatePrizeDrawDetails(detailId!, data);
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Profile updated successfully')),
+        SnackBar(content: Text('บันทึกข้อมูลสำเร็จ !')),
       );
 
       Navigator.pushReplacementNamed(context, '/scan_history');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update profile')),
+        SnackBar(content: Text('บันทึกข้อมูลไม่สำเร็จ !')),
       );
     }
   }
@@ -92,7 +92,7 @@ class _EditPrizedrawDetailsState extends State<EditPrizedrawDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Edit Prizedraw Details'),
+        title: Text('ข้อมูลลงทะเบียน'),
       ),
       backgroundColor: Color(0xFFEF4D23), // ตั้งค่าสีพื้นหลังของ Scaffold
       body: SingleChildScrollView(
@@ -120,25 +120,26 @@ class _EditPrizedrawDetailsState extends State<EditPrizedrawDetails> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  _buildTextField(Icons.business, 'Company Name',
+                  _buildTextField(Icons.business, 'คลินิก/ร้านค้า *',
                       companyNameController, true),
                   _buildTextField(
-                      Icons.person, 'First Name', firstNameController, true),
+                      Icons.person, 'ชื่อ *', firstNameController, true),
                   _buildTextField(
-                      Icons.person, 'Last Name', lastNameController, true),
-                  _buildTextField(Icons.email, 'E-mail', emailController, true),
+                      Icons.person, 'นามสกุล *', lastNameController, true),
                   _buildTextField(
-                      Icons.phone, 'Phone Number', phoneController, true),
+                      Icons.phone, 'เบอร์โทรศัพท์ *', phoneController, true),
                   _buildTextField(
-                      Icons.chat, 'Line ID', lineIdController, true),
+                      Icons.email, 'อีเมล์', emailController, false),
                   _buildTextField(
-                      Icons.location_on, 'Province', provinceController, true),
+                      Icons.chat, 'Line ID', lineIdController, false),
                   _buildTextField(
-                      Icons.comment, 'Suggestion', suggestionController, true),
+                      Icons.location_on, 'ที่อยู่', provinceController, false),
+                  _buildTextField(Icons.comment, 'ข้อมูลเพิ่มเติม',
+                      suggestionController, false),
                   SizedBox(height: 20.0),
                   _buildActionButton(
                     context,
-                    'Save Changes',
+                    'ลงทะเบียน',
                     Colors.red,
                     () {
                       if (_formKey.currentState!.validate()) {
@@ -179,7 +180,7 @@ class _EditPrizedrawDetailsState extends State<EditPrizedrawDetails> {
         validator: isRequired
             ? (value) {
                 if (value == null || value.isEmpty) {
-                  return '$label is required';
+                  return 'กรุณากรอกข้อมูล :$label';
                 }
                 return null;
               }

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'edit_prizedraw_details.dart';
 import '../services/api/api_service.dart';
+import '../components/richtext.dart';
 
 class ScanHistoryScreen extends StatefulWidget {
   @override
@@ -46,7 +47,6 @@ class _ScanHistoryScreenState extends State<ScanHistoryScreen> {
   }
 
   @override
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -54,48 +54,54 @@ class _ScanHistoryScreenState extends State<ScanHistoryScreen> {
       ),
       backgroundColor: Color(0xFFEF4D23), // ตั้งค่าสีพื้นหลังของ Scaffold
       body: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.all(10),
-          color: Color(0xFFEF4D23), // ตั้งค่าสีพื้นหลังของ Container
-          child: Column(
-            children: [
-              SizedBox(height: 40.0), // เพิ่มระยะห่างด้านบน
-              Image.asset(
-                'assets/images/logo-hutox-new.png',
-                height: 70.0, // ปรับขนาดโลโก้ตามความเหมาะสม
-              ),
-              SizedBox(height: 30.0), // เพิ่มระยะห่างระหว่างโลโก้และเนื้อหา
-              _isLoading
-                  ? Center(child: CircularProgressIndicator())
-                  : scanHistory.isEmpty
-                      ? Center(
-                          child: Column(
-                          children: [
-                            SizedBox(
-                                height:
-                                    20.0), // เพิ่มระยะห่างระหว่างโลโก้และข้อความ
-                            Text(
-                              'ไม่มีข้อมูล',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+        child: Align(
+          alignment:
+              Alignment.topCenter, // จัดตำแหน่งที่กึ่งกลางในแนวนอนและชิดด้านบน
+          child: Container(
+            constraints: BoxConstraints(
+              maxWidth: 500, // กำหนด max-width
+            ),
+            padding: EdgeInsets.all(10),
+            color: Color(0xFFEF4D23), // ตั้งค่าสีพื้นหลังของ Container
+            child: Column(
+              children: [
+                SizedBox(height: 40.0), // เพิ่มระยะห่างด้านบน
+                Image.asset(
+                  'assets/images/logo-hutox-new.png',
+                  height: 70.0, // ปรับขนาดโลโก้ตามความเหมาะสม
+                ),
+                SizedBox(height: 30.0), // เพิ่มระยะห่างระหว่างโลโก้และเนื้อหา
+                _isLoading
+                    ? CircularProgressIndicator()
+                    : scanHistory.isEmpty
+                        ? Column(
+                            children: [
+                              SizedBox(
+                                  height:
+                                      20.0), // เพิ่มระยะห่างระหว่างโลโก้และข้อความ
+                              Text(
+                                'ไม่มีข้อมูล',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                          ],
-                        ))
-                      : ListView.builder(
-                          shrinkWrap:
-                              true, // ใช้ shrinkWrap เพื่อให้ ListView ใช้ขนาดที่เหมาะสม
-                          physics:
-                              NeverScrollableScrollPhysics(), // ปิดการ scroll ของ ListView เพราะใช้ SingleChildScrollView แทน
-                          itemCount: scanHistory.length,
-                          itemBuilder: (context, index) {
-                            final item = scanHistory[index];
-                            return _buildScanHistoryItem(item);
-                          },
-                        ),
-            ],
+                            ],
+                          )
+                        : ListView.builder(
+                            shrinkWrap:
+                                true, // ใช้ shrinkWrap เพื่อให้ ListView ใช้ขนาดที่เหมาะสม
+                            physics:
+                                NeverScrollableScrollPhysics(), // ปิดการ scroll ของ ListView เพราะใช้ SingleChildScrollView แทน
+                            itemCount: scanHistory.length,
+                            itemBuilder: (context, index) {
+                              final item = scanHistory[index];
+                              return _buildScanHistoryItem(item);
+                            },
+                          ),
+              ],
+            ),
           ),
         ),
       ),
@@ -112,7 +118,7 @@ class _ScanHistoryScreenState extends State<ScanHistoryScreen> {
     Color statusColor = isValid ? Colors.green : Colors.red;
 
     DateTime date = DateTime.parse(item['scan_date']);
-    String formattedDate = DateFormat('dd/MM/yyyy HH:mm:ss').format(date);
+    String formattedDate = DateFormat('dd/MM/yyyy').format(date);
 
     return Card(
       margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
@@ -132,14 +138,30 @@ class _ScanHistoryScreenState extends State<ScanHistoryScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Tag: $tag',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text('Product: $product'),
-                  Text('Brand: $brand'),
-                  Text('Status: $status',
-                      style: TextStyle(
-                          color: statusColor, fontWeight: FontWeight.bold)),
-                  Text('Date: $formattedDate'),
+                  RichTexts(
+                    label: 'แท็ก',
+                    value: tag,
+                    // labelColor: Colors.blue, // กำหนดสีสำหรับ label
+                    // valueColor: Colors.red, // กำหนดสีสำหรับ value
+                  ),
+                  RichTexts(
+                    label: 'สินค้า',
+                    value: product,
+                  ),
+                  RichTexts(
+                    label: 'แบรนด์',
+                    value: brand,
+                  ),
+                  RichTexts(
+                    label: 'สถานะ',
+                    value: status,
+                    valueColor: statusColor,
+                  ),
+                  RichTexts(
+                    label: 'วันที่',
+                    value: formattedDate,
+                  ),
+                  SizedBox(height: 10),
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(
@@ -150,7 +172,7 @@ class _ScanHistoryScreenState extends State<ScanHistoryScreen> {
                         ),
                       );
                     },
-                    child: Text('Scan Details'),
+                    child: Text('ข้อมูลลงทะเบียน'),
                   ),
                 ],
               ),

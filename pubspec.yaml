@@ -42,6 +42,9 @@ dependencies:
   uuid: ^4.4.2
   flutter_launcher_icons: ^0.13.1
   flutter_svg: ^1.0.0
+  geolocator: ^9.0.0
+  universal_html: ^2.2.4
+  universal_io: ^2.2.2
 
 dev_dependencies:
   flutter_test:
@@ -79,9 +82,11 @@ flutter:
           weight: 700
           
   assets:
+    - assets/icon/new-logo-512.png
     - assets/icon/icon-hospital.svg
     - assets/icon/icon-doctor.svg
     - assets/icon/icon-scan-tag.png
+    - assets/icon/icon-profile-cicle.svg
     - assets/icon/icon-scan.svg
     - assets/images/logo-hutox.jpg
     - assets/images/logo-hutox.png

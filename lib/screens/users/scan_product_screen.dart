@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
-// import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:uuid/uuid.dart';
 import '../../services/api/api_service.dart';
-// import '../edit_prizedraw_details.dart';
-// import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter/foundation.dart';
 
 class ScanProductScreen extends StatefulWidget {
   @override
@@ -20,12 +17,28 @@ class _ScanProductScreenState extends State<ScanProductScreen> {
 
   @override
   void dispose() {
+    // รีเซ็ตค่าทั้งหมดเมื่อออกจากหน้า Scan
+    controller?.stopCamera();
     controller?.dispose();
+    result = null;
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    // กำหนดความกว้างและความสูงของกล้องให้เหมาะสม
+    double cameraWidth = screenWidth * 0.8;
+    double cameraHeight = cameraWidth * (screenHeight / screenWidth);
+
+    double adjustedCameraWidth = cameraWidth * 0.95;
+    double adjustedCameraHeight = cameraHeight * 0.95;
+
+    double leftPosition = (cameraWidth - adjustedCameraWidth) / 2;
+    double topPosition = (cameraHeight - adjustedCameraHeight) / 2;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -45,27 +58,48 @@ class _ScanProductScreenState extends State<ScanProductScreen> {
                 ),
               ),
               SizedBox(height: 40.0),
-              Expanded(
-                child: Center(
-                  child: Container(
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    height: MediaQuery.of(context).size.width * 2,
-                    child: QRView(
-                      key: qrKey,
-                      onQRViewCreated: _onQRViewCreated,
-                      overlay: QrScannerOverlayShape(
-                        borderColor: Colors.white,
-                        borderRadius: 10,
-                        borderLength: 50,
-                        borderWidth: 10,
-                        cutOutSize: MediaQuery.of(context).size.width * 0.7,
+              Center(
+                child: Stack(
+                  children: [
+                    Container(
+                      width: cameraWidth,
+                      height: cameraHeight,
+                      alignment: Alignment.center,
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            left: leftPosition,
+                            top: topPosition,
+                            child: Container(
+                              width: adjustedCameraWidth,
+                              height: adjustedCameraHeight,
+                              child: QRView(
+                                key: qrKey,
+                                onQRViewCreated: _onQRViewCreated,
+                                overlay: QrScannerOverlayShape(
+                                  borderColor: Colors.white,
+                                  borderRadius: 10,
+                                  borderLength: 30,
+                                  borderWidth: 10,
+                                  cutOutSize: screenWidth * 0.7,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
+                  ],
                 ),
               ),
-              SizedBox(height: 20.0),
-              ElevatedButton(
+            ],
+          ),
+          Positioned(
+            bottom: 60.0,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
@@ -78,17 +112,139 @@ class _ScanProductScreenState extends State<ScanProductScreen> {
                   ),
                 ),
                 child: Text(
-                  'Back to Home',
+                  'ย้อนกลับ',
                   style: TextStyle(color: Color(0xFFEF4D23)),
                 ),
               ),
-              SizedBox(height: 40.0),
-            ],
+            ),
           ),
         ],
       ),
     );
   }
+  // @override
+  // Widget build(BuildContext context) {
+  //   double screenWidth = MediaQuery.of(context).size.width;
+  //   double containerWidth = screenWidth > 500 ? 500 : screenWidth;
+
+  //   // double screenWidth = MediaQuery.of(context).size.width;
+  //   double screenHeight = MediaQuery.of(context).size.height;
+
+  //   // กำหนดความกว้างของกล้องเป็น 80% ของหน้าจอ
+  //   double cameraWidth = screenWidth * 0.8;
+  //   double cameraHeight = cameraWidth * (screenHeight / screenWidth);
+
+  //   // คำนวณขนาดของกล้องที่ 95% ของ cameraWidth และ cameraHeight
+  //   double adjustedCameraWidth = cameraWidth * 0.95;
+  //   double adjustedCameraHeight = cameraHeight * 0.95;
+
+  //   // คำนวณตำแหน่งที่เหมาะสมเพื่อให้กล้องอยู่ตรงกลาง
+  //   double leftPosition = (cameraWidth - adjustedCameraWidth) / 2;
+  //   double topPosition = (cameraHeight - adjustedCameraHeight) / 2;
+
+  //   return Scaffold(
+  //     body: Center(
+  //       child: Container(
+  //         width: containerWidth,
+  //         color: Color(0xFFEF4D23),
+  //         child: Stack(
+  //           children: [
+  //             Positioned.fill(
+  //               child: Image.asset(
+  //                 'assets/images/scan-bg.png',
+  //                 fit: BoxFit.cover,
+  //               ),
+  //             ),
+  //             Column(
+  //               children: <Widget>[
+  //                 SizedBox(height: 60.0),
+  //                 Center(
+  //                   child: Image.asset(
+  //                     'assets/images/logo-hutox-new.png',
+  //                     height: 60.0,
+  //                   ),
+  //                 ),
+  //                 SizedBox(height: 40.0),
+  //                 Center(
+  //                   child: Stack(
+  //                     children: [
+  //                       Container(
+  //                         width: 800,
+  //                         height: 800,
+  //                         alignment: Alignment.center,
+  //                         child: Stack(
+  //                           children: [
+  //                             Positioned(
+  //                               left: leftPosition,
+  //                               top: topPosition,
+  //                               child: Container(
+  //                                 width: 300,
+  //                                 height: 300,
+  //                                 child: QRView(
+  //                                   key: qrKey,
+  //                                   onQRViewCreated: _onQRViewCreated,
+  //                                   overlay: QrScannerOverlayShape(
+  //                                     borderColor: Colors.white,
+  //                                     borderRadius: 10,
+  //                                     borderLength: 30,
+  //                                     borderWidth: 10,
+  //                                     cutOutSize: screenWidth * 0.7,
+  //                                   ),
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                           ],
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //                 // Expanded(
+  //                 //   child: Center(
+  //                 //     child: Container(
+  //                 //       width: 100,
+  //                 //       height: containerWidth,
+  //                 //       child: QRView(
+  //                 //         key: qrKey,
+  //                 //         onQRViewCreated: _onQRViewCreated,
+  //                 //         overlay: QrScannerOverlayShape(
+  //                 //           borderColor: Colors.white,
+  //                 //           borderRadius: 10,
+  //                 //           borderLength: 50,
+  //                 //           borderWidth: 10,
+  //                 //           // cutOutSize: containerWidth,
+  //                 //         ),
+  //                 //       ),
+  //                 //     ),
+  //                 //   ),
+  //                 // ),
+  //                 SizedBox(height: 20.0),
+  //                 ElevatedButton(
+  //                   onPressed: () {
+  //                     Navigator.pop(context);
+  //                   },
+  //                   style: ElevatedButton.styleFrom(
+  //                     backgroundColor: Colors.white,
+  //                     padding: EdgeInsets.symmetric(
+  //                         horizontal: 40.0, vertical: 20.0),
+  //                     shape: RoundedRectangleBorder(
+  //                       borderRadius: BorderRadius.circular(10.0),
+  //                     ),
+  //                   ),
+  //                   child: Text(
+  //                     'ย้อนกลับ',
+  //                     style: TextStyle(color: Color(0xFFEF4D23)),
+  //                   ),
+  //                 ),
+  //                 SizedBox(height: 40.0),
+  //               ],
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
@@ -104,15 +260,9 @@ class _ScanProductScreenState extends State<ScanProductScreen> {
 
   Future<void> _handleScanResult(String tagCode) async {
     try {
-      // await _apiService.authenScan(scanData);
       final tagScanData = await _apiService.getTagUserScanData(tagCode);
-      print(
-          'Scan count for tag ${tagScanData.tagCode}: ${tagScanData.scanCount}');
-      print('message: ${tagScanData.message}');
-
       if (tagScanData.scanStatus == 'verify-true') {
         await _apiService.enterPrizeDetail(tagScanData.tagId);
-
         _showSuccessDialog(
           tagScanData.tagCode,
           tagScanData.name,
@@ -141,7 +291,7 @@ class _ScanProductScreenState extends State<ScanProductScreen> {
             children: [
               SizedBox(height: 40),
               Icon(FontAwesomeIcons.circleCheck,
-                  size: 100, color: Color(0xFFEF4D23)),
+                  size: 100, color: Colors.green),
               SizedBox(height: 20),
               Text(
                 "สินค้านี้เป็นของแท้",
@@ -152,7 +302,7 @@ class _ScanProductScreenState extends State<ScanProductScreen> {
                 radius: 100,
                 backgroundColor: Colors.red,
                 child: Padding(
-                  padding: const EdgeInsets.all(2), // Border radius
+                  padding: const EdgeInsets.all(2),
                   child: ClipOval(
                     child: Image.network(
                       imageUrl,
@@ -182,7 +332,7 @@ class _ScanProductScreenState extends State<ScanProductScreen> {
                         fontWeight: FontWeight.bold,
                         color: Color(0xFFEF4D23),
                         fontSize: 18,
-                        fontFamily: 'Kanit', // กำหนดฟอนต์ Kanit
+                        fontFamily: 'Kanit',
                       ),
                     ),
                     TextSpan(
@@ -190,7 +340,7 @@ class _ScanProductScreenState extends State<ScanProductScreen> {
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 16,
-                        fontFamily: 'Kanit', // กำหนดฟอนต์ Kanit
+                        fontFamily: 'Kanit',
                       ),
                     ),
                   ],
@@ -198,7 +348,14 @@ class _ScanProductScreenState extends State<ScanProductScreen> {
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () async {
+                  // await controller?.stopCamera();
+                  Navigator.pop(context);
+                  setState(() {
+                    result = null;
+                  });
+                },
+                // onPressed: () => {Navigator.pop(context)},
                 style: ElevatedButton.styleFrom(
                   fixedSize: Size(90, 30),
                   backgroundColor: Color(0xFFEF4D23),
@@ -209,7 +366,7 @@ class _ScanProductScreenState extends State<ScanProductScreen> {
                   ),
                 ),
                 child: Text(
-                  'OK',
+                  'ปิด',
                   style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
               ),
@@ -227,13 +384,12 @@ class _ScanProductScreenState extends State<ScanProductScreen> {
   void _showErrorDialog(String tagCode, String message, String status) {
     IconData icon;
 
-    // กำหนดไอคอนตามค่า status
     if (status == "verify-warning") {
       icon = FontAwesomeIcons.circleExclamation;
     } else if (status == "verify-false") {
       icon = FontAwesomeIcons.circleXmark;
     } else {
-      icon = FontAwesomeIcons.circleXmark; // ค่าเริ่มต้นหากไม่ตรงกับ status ใด
+      icon = FontAwesomeIcons.circleXmark;
     }
 
     showDialog(
@@ -256,7 +412,7 @@ class _ScanProductScreenState extends State<ScanProductScreen> {
                         fontWeight: FontWeight.bold,
                         color: Color(0xFFEF4D23),
                         fontSize: 18,
-                        fontFamily: 'Kanit', // กำหนดฟอนต์ Kanit
+                        fontFamily: 'Kanit',
                       ),
                     ),
                     TextSpan(
@@ -266,7 +422,7 @@ class _ScanProductScreenState extends State<ScanProductScreen> {
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 16,
-                        fontFamily: 'Kanit', // กำหนดฟอนต์ Kanit
+                        fontFamily: 'Kanit',
                       ),
                     ),
                   ],
@@ -284,22 +440,31 @@ class _ScanProductScreenState extends State<ScanProductScreen> {
                   ),
                 ),
                 onPressed: () async {
-                  if (status == "verify-warning") {
-                    await controller?.pauseCamera(); // หยุดกล้อง
-                    controller?.dispose(); // ปิดกล้อง
+                  if (kIsWeb) {
+                    print("Skipping camera control on web.");
                     setState(() {
                       result = null;
                     });
                     Navigator.pushReplacementNamed(context, '/login');
                   } else {
-                    Navigator.pop(context);
-                    setState(() {
-                      result = null;
-                    });
+                    if (status == "verify-warning") {
+                      await controller?.stopCamera();
+                      controller?.dispose();
+                      setState(() {
+                        result = null;
+                      });
+                      Navigator.pushReplacementNamed(context, '/login');
+                    } else {
+                      // await controller?.stopCamera();
+                      Navigator.pop(context);
+                      setState(() {
+                        result = null;
+                      });
+                    }
                   }
                 },
                 child: Text(
-                  'OK',
+                  'ปิด',
                   style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
               ),
