@@ -82,6 +82,7 @@ flutter:
           weight: 700
           
   assets:
+    - assets/icon/new-logo-white-512.png
     - assets/icon/new-logo-512.png
     - assets/icon/icon-hospital.svg
     - assets/icon/icon-doctor.svg

@@ -50,10 +50,10 @@ class _HomeScreenState extends State<HomeScreen> {
             children: <Widget>[
               SizedBox(height: 70.0),
               Image.asset(
-                'assets/icon/new-logo-512.png',
-                height: 70.0, // ปรับขนาดโลโก้ตามความเหมาะสม
+                'assets/icon/new-logo-white-512.png',
+                height: 140.0, // ปรับขนาดโลโก้ตามความเหมาะสม
               ),
-              SizedBox(height: 20.0),
+              // SizedBox(height: 20.0),
               Text(
                 'ตรวจสอบผลิตภัณฑ์',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
