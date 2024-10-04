@@ -11,6 +11,7 @@ class TagScanData {
   final String scanStatus;
 
   final int productId;
+  final int user_id;
   final String name;
   final String brand;
   final String manufacturer;
@@ -25,6 +26,7 @@ class TagScanData {
     required this.tagId,
     required this.scanStatus,
     required this.productId,
+    required this.user_id,
     required this.name,
     required this.brand,
     required this.manufacturer,
@@ -40,6 +42,7 @@ class TagScanData {
       message: json['message'] ?? 'Unknown', // ให้ค่าเริ่มต้นหากเป็น null
       tagId: json['tagId'] ?? 0, // ให้ค่าเริ่มต้นหากเป็น null
       scanStatus: json['scanStatus'] ?? 'Unknown', // ให้ค่าเริ่มต้นหากเป็น null
+      user_id: json['productDetails']['user_id'] ?? 0,
       productId: json['productDetails']['product_id'] ??
           0, // ดึงข้อมูลจาก productDetails
       name: json['productDetails']['name'] ?? 'Unknown',
