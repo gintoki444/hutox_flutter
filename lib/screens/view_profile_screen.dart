@@ -145,6 +145,14 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                         );
                       },
                     ),
+                    SizedBox(height: 10.0),
+                    // เพิ่มปุ่ม "ลบบัญชีผู้ใช้งาน" ใน _ViewProfileScreenState
+                    _buildActionButton(
+                      context,
+                      'ลบบัญชีผู้ใช้งาน',
+                      Colors.redAccent,
+                      () => _confirmDeleteAccount(),
+                    ),
                   ],
                 ),
               ),
@@ -195,6 +203,111 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
         child: Text(label,
             textAlign: TextAlign.center, style: TextStyle(color: Colors.white)),
       ),
+    );
+  }
+
+  // ฟังก์ชันยืนยันการลบบัญชี
+  void _confirmDeleteAccount() async {
+    TextEditingController confirmationController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("ยืนยันการลบบัญชีผู้ใช้งาน"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("พิมพ์ 'ยืนยัน' เพื่อยืนยันการลบบัญชี"),
+              TextField(
+                controller: confirmationController,
+                decoration: InputDecoration(
+                  hintText: 'พิมพ์คำว่า ยืนยัน',
+                ),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("ยกเลิก"),
+            ),
+            TextButton(
+              onPressed: () async {
+                if (confirmationController.text == "ยืนยัน") {
+                  // ลบผู้ใช้
+                  await _deleteAccount();
+                  Navigator.of(context).pop();
+                } else {
+                  // แจ้งเตือนเมื่อข้อความไม่ตรงกัน
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('การยืนยันไม่ถูกต้อง')),
+                  );
+                }
+              },
+              child: Text("ลบ"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+// ฟังก์ชันลบผู้ใช้
+  Future<void> _deleteAccount() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token != null) {
+      Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
+      int? userIdInt = decodedToken['userId'];
+
+      if (userIdInt != null) {
+        String userId = userIdInt.toString();
+
+        try {
+          // เรียกใช้งาน API ลบผู้ใช้
+          bool isDeleted = await _apiService.deleteUserByid(userId);
+
+          if (isDeleted) {
+            await prefs.clear();
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => LoginScreen()),
+              (Route<dynamic> route) => false,
+            );
+          } else {
+            _showDeletionFailedDialog();
+          }
+        } catch (e) {
+          // แสดง Popup แจ้งว่าการลบไม่สำเร็จ
+          _showDeletionFailedDialog();
+        }
+      }
+    }
+  }
+
+// ฟังก์ชันแสดง Popup การลบไม่สำเร็จ
+  void _showDeletionFailedDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("ไม่สามารถลบผู้ใช้งานได้"),
+          content: Text(
+              "ไม่สามารถลบผู้ใช้งานได้ เนื่องจากมีข้อมูลที่เกี่ยวข้องอยู่ในระบบ"),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("ตกลง"),
+            ),
+          ],
+        );
+      },
     );
   }
 }

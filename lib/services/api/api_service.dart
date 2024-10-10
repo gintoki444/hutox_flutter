@@ -307,4 +307,26 @@ class ApiService {
       return {'error': 'Failed to re-activate account: ${response.statusCode}'};
     }
   }
+
+  Future<bool> deleteUserByid(String userId) async {
+    try {
+      final response = await http.delete(
+        Uri.parse('$baseUrl/users/$userId'),
+      );
+
+      if (response.statusCode == 200) {
+        print("User and profile deleted successfully");
+        return true; // ส่งกลับ true เมื่อการลบสำเร็จ
+      } else {
+        print("Failed to delete user: ${response.statusCode}");
+        print("Response body: ${response.body}");
+
+        // ตรวจสอบข้อมูลใน response.body และแสดงผลลัพธ์เพิ่มเติมได้ที่นี่
+        return false; // ส่งกลับ false เมื่อการลบไม่สำเร็จ
+      }
+    } catch (e) {
+      print("Error occurred while deleting user: $e");
+      return false; // ส่งกลับ false เมื่อเกิดข้อผิดพลาด
+    }
+  }
 }
