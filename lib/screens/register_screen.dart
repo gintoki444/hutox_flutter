@@ -153,7 +153,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       decoration: InputDecoration(
                         hintText: 'ชื่อคลินิก/ร้านค้า',
                         hintStyle: TextStyle(color: Colors.white),
-                        prefixIcon: Icon(Icons.person, color: Colors.white),
+                        prefixIcon: Icon(Icons.business, color: Colors.white),
                         enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.white),
                         ),
@@ -241,27 +241,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     SizedBox(height: 20.0),
                     _isLoading
                         ? CircularProgressIndicator()
-                        : ElevatedButton(
-                            onPressed: _register,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red, // สีพื้นหลังของปุ่ม
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              padding: EdgeInsets.symmetric(vertical: 14.0),
-                            ),
-                            child: Container(
-                              width: double.infinity,
-                              child: Text(
-                                'สมัครสมาชิก',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.white, // ตัวหนังสือสีขาว
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ),
+                        : _buildActionButton(
+                            context,
+                            'สมัครสมาชิก',
+                            Colors.redAccent,
+                            () => _register(),
                           ),
+
+                    // ElevatedButton(
+                    //     onPressed: _register,
+                    //     style: ElevatedButton.styleFrom(
+                    //       backgroundColor: Colors.red, // สีพื้นหลังของปุ่ม
+                    //       shape: RoundedRectangleBorder(
+                    //         borderRadius: BorderRadius.circular(20),
+                    //       ),
+                    //       padding: EdgeInsets.symmetric(vertical: 14.0),
+                    //     ),
+                    //     child: Container(
+                    //       width: double.infinity,
+                    //       child: Text(
+                    //         'สมัครสมาชิก',
+                    //         textAlign: TextAlign.center,
+                    //         style: TextStyle(
+                    //           color: Colors.white, // ตัวหนังสือสีขาว
+                    //           fontSize: 18,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ),
                     SizedBox(height: 20.0),
                     TextButton(
                       onPressed: () {
@@ -290,29 +297,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                     ),
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.center,
-                    //   children: <Widget>[
-                    //     Text(
-                    //       'มีบัญชีผู้ใช้งาน?',
-                    //       style: TextStyle(color: Colors.white),
-                    //     ),
-                    //     TextButton(
-                    //       onPressed: () {
-                    //         Navigator.pop(context); // กลับไปที่หน้า Login
-                    //       },
-                    //       child: Text(
-                    //         'ล็อกอิน',
-                    //         style: TextStyle(color: Colors.blue),
-                    //       ),
-                    //     ),
-                    //   ],
-                    // ),
                   ],
                 ),
               ),
             ),
           ),
         ));
+  }
+
+  Widget _buildActionButton(
+      BuildContext context, String label, Color color, VoidCallback onPressed) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.7,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color(0xFFEF4D23),
+          padding: EdgeInsets.symmetric(vertical: 16.0),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+          side: BorderSide(color: Colors.white, width: 2), // เส้นขอบสีขาว
+          // shape: RoundedRectangleBorder(
+          //   borderRadius: BorderRadius.circular(30),
+          // ),
+        ),
+        onPressed: onPressed,
+        child: Text(label,
+            textAlign: TextAlign.center, style: TextStyle(color: Colors.white)),
+      ),
+    );
   }
 }

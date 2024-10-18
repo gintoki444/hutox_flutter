@@ -162,8 +162,11 @@ class _ScanHistoryScreenState extends State<ScanHistoryScreen> {
                     value: formattedDate,
                   ),
                   SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: () {
+                  _buildActionButton(
+                    context,
+                    'ข้อมูลลงทะเบียน',
+                    Colors.red,
+                    () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -172,13 +175,35 @@ class _ScanHistoryScreenState extends State<ScanHistoryScreen> {
                         ),
                       );
                     },
-                    child: Text('ข้อมูลลงทะเบียน'),
                   ),
                 ],
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildActionButton(
+      BuildContext context, String label, Color color, VoidCallback onPressed) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width * 0.7,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color(0xFFFFFFFF),
+          padding: EdgeInsets.symmetric(vertical: 5.0),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+          side: BorderSide(color: Color(0xFFEF4D23), width: 2), // เส้นขอบสีขาว
+          // shape: RoundedRectangleBorder(
+          //   borderRadius: BorderRadius.circular(30),
+          // ),
+        ),
+        onPressed: onPressed,
+        child: Text(label,
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Color(0xFFEF4D23))),
       ),
     );
   }

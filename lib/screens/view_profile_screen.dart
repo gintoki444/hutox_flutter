@@ -105,7 +105,7 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                       ),
                     ),
                     SizedBox(height: 16.0),
-                    _buildProfileItem(Icons.person, 'คลินิก/ร้านค้า',
+                    _buildProfileItem(Icons.business, 'คลินิก/ร้านค้า',
                         userProfile!['username'] ?? 'ไม่มีข้อมูล'),
                     _buildProfileItem(Icons.email, 'อีเมล์',
                         userProfile!['email'] ?? 'ไม่มีข้อมูล'),

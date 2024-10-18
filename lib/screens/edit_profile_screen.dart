@@ -119,7 +119,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           _buildProfileItem(
-                            Icons.person,
+                            Icons.business,
                             'คลินิก/ร้านค้า',
                             username!,
                             enabled: false,

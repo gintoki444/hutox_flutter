@@ -1,0 +1,27 @@
+{
+	"folders": [
+		{
+			"name": "meso-shop-app",
+			"path": "../../../ionic/meso-shop-app"
+		},
+		{
+			"name": "Queue_Express_Server_ISKT",
+			"path": "../../../Queue_Express_Server_ISKT"
+		},
+		{
+			"name": "hutox_flutter",
+			"path": "../.."
+		},
+		{
+			"name": "hutox-admin",
+			"path": "../../../hutox-admin"
+		},
+		{
+			"name": "qms",
+			"path": "../../../qms"
+		}
+	],
+	"settings": {
+		"git.ignoreLimitWarning": true
+	}
+}

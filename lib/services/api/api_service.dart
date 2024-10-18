@@ -311,7 +311,7 @@ class ApiService {
   Future<bool> deleteUserByid(String userId) async {
     try {
       final response = await http.delete(
-        Uri.parse('$baseUrl/users/$userId'),
+        Uri.parse('$baseUrl/users/mark-as-deleted/$userId'),
       );
 
       if (response.statusCode == 200) {
